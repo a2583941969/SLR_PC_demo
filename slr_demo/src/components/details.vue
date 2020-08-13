@@ -148,12 +148,13 @@ export default {
   data() {
     return {
       pid:'',
-      // 保存商品详细信息的数组
+      // 保存商品详细信息的对象
       detail_obj: {},
       // 保存商品所有颜色的数组
       pcolors: [],
       // 保存商品颜色与图片路径的数组
       imgUrl: [],
+      // 保存第一张的大图
       img_M:'',
       // 商品数量
       count:1,

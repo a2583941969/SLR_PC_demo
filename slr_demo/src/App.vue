@@ -14,9 +14,7 @@ a{
   text-decoration: none;
   color: #333;
 }
-#app{
- 
-}
+
 .page_body{
   margin-top: 121px;
 }
@@ -27,5 +25,23 @@ a{
   /* margin-bottom: 28px; */
   margin-top:-8px;
   box-shadow: 0px 0px 30px -10px #555;
+}
+
+div.btn {
+  margin-top: 30px;
+}
+
+div.btn > a,div.btn > button {
+  background-color: #ee1c25;
+  color: #fff;
+  height: 40px;
+  line-height: 40px;
+  width: 128px;
+  box-sizing: border-box;
+  border-radius: 2px;
+  text-align: center;
+  border:0;
+  display: block;
+  outline: 0;
 }
 </style>

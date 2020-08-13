@@ -6,37 +6,64 @@ import index from '../components/index.vue';
 const originalPush = VueRouter.prototype.push
 
 VueRouter.prototype.push = function push(location) {
-   return originalPush.call(this, location).catch(err => err)
+	return originalPush.call(this, location).catch(err => err)
 }
 Vue.use(VueRouter);
 
 const routes = [{
-        path: '/',
-        name: 'index',
-        component: index
-    },
-    {
-        path: '/product',
-        name: 'product',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () =>
-            import ( /* webpackChunkName: "product" */ '../components/product.vue')
-    },
-    {
-        path: '/details',
-        name: 'details',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () =>
-            import ( /* webpackChunkName: "product" */ '../components/details.vue')
-    }
+	path: '/',
+	name: 'index',
+	component: index
+},
+{
+	path: '/product',
+	name: 'product',
+	// route level code-splitting
+	// this generates a separate chunk (about.[hash].js) for this route
+	// which is lazy-loaded when the route is visited.
+	component: () =>
+		import( /* webpackChunkName: "product" */ '../components/product.vue')
+},
+{
+	path: '/details',
+	name: 'details',
+	// route level code-splitting
+	// this generates a separate chunk (about.[hash].js) for this route
+	// which is lazy-loaded when the route is visited.
+	component: () =>
+		import( /* webpackChunkName: "product" */ '../components/details.vue')
+},
+{
+	path: '/login',
+	name: 'login',
+	// route level code-splitting
+	// this generates a separate chunk (about.[hash].js) for this route
+	// which is lazy-loaded when the route is visited.
+	component: () =>
+		import( /* webpackChunkName: "login" */ '../components/login.vue')
+},
+{
+	path: '/registration',
+	name: 'registration',
+	// route level code-splitting
+	// this generates a separate chunk (about.[hash].js) for this route
+	// which is lazy-loaded when the route is visited.
+	component: () =>
+		import( /* webpackChunkName: "registration" */ '../components/registration.vue')
+},
+{
+	path: '/shopping',
+	name: 'shopping',
+	// route level code-splitting
+	// this generates a separate chunk (about.[hash].js) for this route
+	// which is lazy-loaded when the route is visited.
+	component: () =>
+		import( /* webpackChunkName: "shopping" */ '../components/shopping.vue')
+}
 ]
 
 const router = new VueRouter({
-    routes
+	routes
 })
 
 export default router

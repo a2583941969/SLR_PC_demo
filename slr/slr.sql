@@ -50,6 +50,13 @@ CREATE TABLE slr_product_img(
   pro_id INT, #商品ID
   FOREIGN KEY(pro_id) REFERENCES slr_product(pid)
 );
+-- 购物车表
+CREATE TABLE slr_shopping_car(
+  sid INT PRIMARY KEY AUTO_INCREMENT, #购物车ID
+  scount INT,#商品数量
+  user_id INT,#用户id
+  pro_id INT#商品ID
+);
 -- 首页轮播
 CREATE TABLE slr_index_carousel(
   cid INT PRIMARY KEY AUTO_INCREMENT,

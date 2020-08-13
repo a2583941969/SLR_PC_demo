@@ -11,14 +11,19 @@
             <i></i>
             <a href="javascript:;">在线客服</a>
           </li>
-          <li>
+          <li v-if="!this.$store.state.isLogin">
             <i></i>
-            <a href="javascript:;">登录 | </a>
-            <a href="javascript:;"> 注册</a>
+            <router-link to="/login">登录 |</router-link>
+            <router-link to="/registration">注册</router-link>
+          </li>
+          <li v-else>
+            <i></i>
+            <a href="javascript:;">{{this.$store.state.phoneNum}} |</a>
+            <a @click="clearStorage">注销</a>
           </li>
           <li>
             <i></i>
-            <a href="javascript:;">( {{n}} )</a>
+            <router-link to='/shopping'>( {{n}} )</router-link>
           </li>
         </ul>
       </div>
@@ -31,9 +36,16 @@
             <div>
               <ul>
                 <li>
-                  
                   <button @click="serach"></button>
-                  <input type="text" name="p_search" v-model="kw" id="dSearch" placeholder="搜索" @input="ipt_serach" @keydown.13="serach"/>
+                  <input
+                    type="text"
+                    name="p_search"
+                    v-model="kw"
+                    id="dSearch"
+                    placeholder="搜索"
+                    @input="ipt_serach"
+                    @keyup.13="serach"
+                  />
                   <button @click="shut"></button>
                 </li>
                 <li v-for="(name,i) of search_arr" :key="i+'A'">
@@ -46,7 +58,7 @@
         <div class="nav">
           <ul>
             <li>
-              <router-link to='/'>首页</router-link>
+              <router-link to="/">首页</router-link>
             </li>
             <li>
               <a href="javascript:;">
@@ -166,7 +178,7 @@
                         </a>
                         <ul>
                           <li v-for="(n,m) of value.class" :key="m+'Ca'">
-                            <img v-if="n!=='查看全部'" :src="n.url" alt=""/>
+                            <img v-if="n!=='查看全部'" :src="n.url" alt />
                             <a v-else href="javascript:;">{{n}}</a>
                           </li>
                         </ul>
@@ -188,7 +200,7 @@
                         </a>
                         <ul>
                           <li v-for="(n,m) of value.class" :key="m+'Ea'">
-                            <img :src="n" alt=""/>
+                            <img :src="n" alt />
                           </li>
                         </ul>
                       </li>
@@ -209,7 +221,7 @@
                         </a>
                         <ul>
                           <li v-for="(n,m) of value.class" :key="m+'Fa'">
-                            <img :src="n" alt=""/>
+                            <img :src="n" alt />
                           </li>
                         </ul>
                       </li>
@@ -235,13 +247,18 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
       // 存放购物车数量
       n: 0,
       // 存放搜索联想的数组
-      search_arr:[{pname:"双立人刀具"},{pname:"套装"},{pname:"小家电"}],
+      search_arr: [
+        { pname: "双立人刀具" },
+        { pname: "套装" },
+        { pname: "小家电" },
+      ],
       // 存放双立人导航栏分类详细信息的数组
       zwlling: [
         {
@@ -293,7 +310,7 @@ export default {
           ],
         },
       ],
-     
+
       staub: [
         {
           url: require("../assets/head_foot/staub-tie@2x.png"),
@@ -347,55 +364,73 @@ export default {
           class: [],
         },
       ],
-       // 保存热销分类的数组
-      sales:[
+      // 保存热销分类的数组
+      sales: [
         {
-          name:"发现最爱",
-          class:["馈赠佳礼","馈赠佳礼","馈赠佳礼","馈赠佳礼","馈赠佳礼","馈赠佳礼","查看全部"]
+          name: "发现最爱",
+          class: [
+            "馈赠佳礼",
+            "馈赠佳礼",
+            "馈赠佳礼",
+            "馈赠佳礼",
+            "馈赠佳礼",
+            "馈赠佳礼",
+            "查看全部",
+          ],
         },
         {
-          name:"热销分类",
-          class:["刀具","刀具","刀具","刀具","刀具","刀具","查看全部"]
-        }
+          name: "热销分类",
+          class: ["刀具", "刀具", "刀具", "刀具", "刀具", "刀具", "查看全部"],
+        },
       ],
       // 保存热销分类的数组
-      sales_1:[
+      sales_1: [
         {
-          name:"人气No.1",
-          class:[{"url":require("../assets/head_foot/RXFL01.png")},"查看全部"]
+          name: "人气No.1",
+          class: [
+            { url: require("../assets/head_foot/RXFL01.png") },
+            "查看全部",
+          ],
         },
         {
-          name:"精选套装",
-          class:[{"url":require("../assets/head_foot/RXFL02.jpg")},"查看全部"]
-        }
+          name: "精选套装",
+          class: [
+            { url: require("../assets/head_foot/RXFL02.jpg") },
+            "查看全部",
+          ],
+        },
       ],
-      // 
-      community:[
+      //
+      community: [
         {
-          name:"视频专区",
-          class:[require("../assets/head_foot/CDSPZQ.jpg")]
+          name: "视频专区",
+          class: [require("../assets/head_foot/CDSPZQ.jpg")],
         },
         {
-          name:"视频专区",
-          class:[require("../assets/head_foot/CDSPZQ.jpg")]
+          name: "视频专区",
+          class: [require("../assets/head_foot/CDSPZQ.jpg")],
         },
         {
-          name:"视频专区",
-          class:[require("../assets/head_foot/CDSPZQ.jpg")]
-        }
+          name: "视频专区",
+          class: [require("../assets/head_foot/CDSPZQ.jpg")],
+        },
       ],
       // 搜索框双向绑定的变量
-      kw:"",
-      time:null
+      kw: "",
+      time: null,
     };
-
   },
   methods: {
+    ...mapMutations(["set_isLogin", "set_phoneNum", "set_uid"]),
+
     // 控制搜索框输入后下方li的高度
     show() {
       var div = document.getElementsByClassName("search_par")[0];
       // 判断搜索框输入后返回的数据是否为0
-      var h=(this.search_arr.length== 0 ? 75:this.search_arr.length*35+20+75)+"px";
+      var h =
+        (this.search_arr.length == 0
+          ? 75
+          : this.search_arr.length * 35 + 20 + 75) + "px";
       div.style.height = h;
     },
     // 关闭搜索框时的高度
@@ -404,22 +439,29 @@ export default {
       div.style.height = "0px";
     },
     // 搜索函数
-    serach(){
-      this.$router.push('/product?kw='+this.kw);
+    serach() {
+      this.$router.push("/product?kw=" + this.kw);
     },
-    ipt_serach(){
-      if(this.time!==null){
+    ipt_serach() {
+      if (this.time !== null) {
         clearTimeout(this.time);
       }
-      this.time=setTimeout(()=>{
-        if(this.kw.trim()!==""){
-          this.$axios.get('/detail/pro?kw='+this.kw).then(result=>{
-            this.search_arr=result.data;
+      this.time = setTimeout(() => {
+        if (this.kw.trim() !== "") {
+          this.$axios.get("/detail/pro?kw=" + this.kw).then((result) => {
+            this.search_arr = result.data;
             this.show();
-          })
+          });
         }
-      },500);
-    }
+      }, 500);
+    },
+    // 注销登录
+    clearStorage() {
+      localStorage.clear();
+      this.set_isLogin(false);
+      this.set_phoneNum('');
+      this.set_uid('');   
+    },
   },
 };
 </script>
@@ -536,9 +578,10 @@ div.header
   > div.search_par
   > div
   > ul
-  > li:first-child +li{
-    margin-top: 20px;
-  }
+  > li:first-child
+  + li {
+  margin-top: 20px;
+}
 div.header > .header02 > div > div.search > div.search_par > div > ul > li {
   line-height: 35px;
   cursor: pointer;
@@ -673,18 +716,60 @@ div.header > .header02 > div > div.nav > ul > li > div.sub_menus {
   left: 0;
   transition: height 0.3s linear;
 }
-div.header > .header02 > div > div.nav > ul > li:nth-child(2):hover > a + div.sub_menus,
-div.header > .header02 > div > div.nav > ul > li:nth-child(3):hover > a + div.sub_menus {
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li:nth-child(2):hover
+  > a
+  + div.sub_menus,
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li:nth-child(3):hover
+  > a
+  + div.sub_menus {
   height: 362px;
 }
-div.header > .header02 > div > div.nav > ul > li:nth-child(4):hover > a + div.sub_menus{
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li:nth-child(4):hover
+  > a
+  + div.sub_menus {
   height: 162px;
 }
-div.header > .header02 > div > div.nav > ul > li:nth-child(5):hover > a + div.sub_menus{
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li:nth-child(5):hover
+  > a
+  + div.sub_menus {
   height: 348px;
 }
-div.header > .header02 > div > div.nav > ul > li:nth-child(6):hover > a + div.sub_menus,
-div.header > .header02 > div > div.nav > ul > li:nth-child(7):hover > a + div.sub_menus{
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li:nth-child(6):hover
+  > a
+  + div.sub_menus,
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li:nth-child(7):hover
+  > a
+  + div.sub_menus {
   height: 269px;
 }
 
@@ -758,7 +843,7 @@ div.header
   > li
   > ul
   > li {
-    text-align: left;
+  text-align: left;
   line-height: 30px;
   font-size: 14px;
 }
@@ -824,27 +909,72 @@ div.header
   > ul {
   margin: 20px 0 30px;
 }
-div.header> .header02> div> div.nav> ul> li> div.sub_menus> div> div> ul> li> a> img {
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li
+  > div.sub_menus
+  > div
+  > div
+  > ul
+  > li
+  > a
+  > img {
   width: 40px;
   vertical-align: middle;
 }
-div.header> .header02> div> div.nav> ul> li> div.sub_menus> div:last-child {
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li
+  > div.sub_menus
+  > div:last-child {
   padding: 20px 0;
   text-align: center;
 }
-div.header> .header02> div> div.nav> ul> li> div.sub_menus> div:last-child> a {
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li
+  > div.sub_menus
+  > div:last-child
+  > a {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-div.header> .header02> div> div.nav> ul> li> div.sub_menus> div:last-child> a> i:first-child {
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li
+  > div.sub_menus
+  > div:last-child
+  > a
+  > i:first-child {
   width: 20px;
   height: 20px;
   margin-right: 10px;
   display: inline-block;
   background: url("../assets/icon.png") -586px -508px no-repeat;
 }
-div.header> .header02> div> div.nav> ul> li> div.sub_menus> div:last-child> a> i:last-child {
+div.header
+  > .header02
+  > div
+  > div.nav
+  > ul
+  > li
+  > div.sub_menus
+  > div:last-child
+  > a
+  > i:last-child {
   width: 6px;
   height: 12px;
   margin-left: 10px;
