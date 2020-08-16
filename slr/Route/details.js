@@ -66,7 +66,7 @@ router.get('/del', (req, res) => {
   let pid = req.query.pid;
   let color = req.query.color;
   // 外键查询
-  console.log(color, 1);
+  // console.log(color, 1);
   if (color == undefined) {
     let sql = `SELECT * FROM slr_product WHERE pid=${pid}`;
     pool.query(sql, (err, result) => {
@@ -90,6 +90,36 @@ router.get('/del', (req, res) => {
 });
 
 
+
+// 请求购物车数据接口
+router.get('/shop',(req,res)=>{
+  let uid=req.query.uid;
+  let sql = 'SELECT s.scount,s.pro_id,s.pro_color,s.is_checked,p.brand,p.pname,p.spec,p.price,p.discount,p.idx_img FROM slr_product AS p,slr_shopping_car AS s WHERE p.pid = s.pro_id AND s.use_id = ?';
+  pool.query(sql,[uid],(err,result)=>{
+    if(err)throw err;
+    res.send(result)
+  })
+});
+
+
+// 添加购物车接口
+router.post('/addpro',(req,res)=>{
+  // 接受到的数据中的必有数据
+  // 用户ID   uid  购物车字段名 user_id
+  // 商品ID   pid           pro_id
+  // 商品数量  count        scount
+  // 可能包含的数据
+  // 商品颜色  pcolor       pro_color
+  let obj=req.data;
+  console.log(obj)
+  if(obj.pcolor==undefined || obj.pcolor==""){
+    let sql=`INSERT INTO slr_shopping_car VALUE(null,?,DEFAULT,?,?,DEFAULT)`
+    pool.query(sql,[obj.count,obj.uid,obj.pid],(err,result)=>{
+      if(err)throw err;
+      res.send(result);
+    });
+  }
+});
 
 
 module.exports = router;

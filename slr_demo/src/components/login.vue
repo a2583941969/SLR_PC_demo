@@ -160,11 +160,7 @@ export default {
     },
     login_is(){
       this.$axios.post('/user/login',`phoneNum=${this.phone}&upwd=${this.pwd}`).then(result=>{
-
-        console.log(result.data[0].code);
-        console.log(result.data[0])
-
-        if(result.data[0].code==undefined){
+        if(result.data.length > 0 ){
           console.log(1)
           localStorage.setItem('isLogin',true);
           localStorage.setItem('phoneNum',result.data[0].phoneNum);

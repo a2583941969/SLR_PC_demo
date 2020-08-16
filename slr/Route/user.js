@@ -38,12 +38,9 @@ router.post('/login', (req, res) => {
   console.log(req.body)
   let sql = 'SELECT * FROM slr_user WHERE phoneNum=? AND upwd=?';
   pool.query(sql,[phone,upwd],(err,result)=>{
+    console.log(result,45646);
     if(err)throw err;
-    if(result.length>=1){
-      res.send(result)
-    }else{
-      res.send({'code':0,"msg":'登陆失败'})
-    }
+    res.send(result)
   })
 });
 

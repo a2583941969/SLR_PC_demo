@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {//保存数据
     isLogin:localStorage.getItem('isLogin')||false,
     phoneNum:localStorage.getItem('phoneNum')||'',
-    uid:localStorage.getItem('uid')||''
+    uid:localStorage.getItem('uid')||'',
+    addShop:localStorage.getItem('addShop')||[],
   },
   mutations: {//修改state中的数据
     set_isLogin(state,bool){
@@ -19,21 +20,17 @@ export default new Vuex.Store({
     },
     set_uid(state,id){
       state.uid=id;
+    },
+    set_addShop(state,obj){
+      if(state.addShop === []){
+        console.log(123)
+        state.addShop=JSON.parse(state.addShop);
+      }
+      state.addShop.push(obj)
     }
   }, 
   actions: {//发送异步函数
-    // login_is(context,user){
-    //   $axios.post('/user/login',`phoneNum=${user.phoneNum}&upwd=${user.upwd}`).then(result=>{
-    //     if(result.code!==undefined){
-    //       context.commit('set_isLogin',true);
-    //       context.commit('set_phoneNum',result.phoneNum);
-    //       context.commit('set_uid',result.uid);
-    //       localStorage.setItem('isLogin',)
-    //       localStorage.setItem('phoneNum',result.phoneNum)
-    //       localStorage.setItem('uid',result.uid)
-    //     }
-    //   });
-    // }
+
   }, 
   modules:{}
 });

@@ -54,8 +54,10 @@ CREATE TABLE slr_product_img(
 CREATE TABLE slr_shopping_car(
   sid INT PRIMARY KEY AUTO_INCREMENT, #购物车ID
   scount INT,#商品数量
-  user_id INT,#用户id
-  pro_id INT#商品ID
+  pro_color VARCHAR(20) DEFAULT '默认色', #商品颜色
+  use_id INT,#用户id
+  pro_id INT,#商品ID
+  is_checked BOOL DEFAULT true
 );
 -- 首页轮播
 CREATE TABLE slr_index_carousel(
@@ -64,8 +66,14 @@ CREATE TABLE slr_index_carousel(
 );
 
 
+INSERT INTO slr_shopping_car VALUES
+(NULL,2,"粉色",1,1,1),
+(NULL,2,DEFAULT,1,2,1);
+
+
+
 -- 插入用户信息
-INSERT INTO slr_user VALUES(NULL,"赵秋豪","18228631560","123456789",1,"2583941969@qq.com","1997-10-27","四川省-成都市-成华区");
+INSERT INTO slr_user VALUES(NULL,"赵秋豪","18228631560","123456789a",1,"2583941969@qq.com","1997-10-27","四川省-成都市-成华区");
 
 INSERT INTO slr_product_family VALUES
 (10,"刀具"),
@@ -112,7 +120,7 @@ INSERT INTO slr_product VALUES
 INSERT INTO slr_product_img VALUES
 (NULL,"http://127.0.0.1:3000/public/img/details/qjt_s01.jpg","http://127.0.0.1:3000/public/img/details/qjt_m01.jpg","石榴红",1),
 (NULL,"http://127.0.0.1:3000/public/img/details/qjt_s02.jpg","http://127.0.0.1:3000/public/img/details/qjt_m02.jpg","石榴红",1),
-(NULL,"http://127.0.0.1:3000/public/img/details/qjt_s04.jpg","http://127.0.0.1:3000/public/img/details/qjt_m03.jpg","粉色",1),
+(NULL,"http://127.0.0.1:3000/public/img/details/qjt_s03.jpg","http://127.0.0.1:3000/public/img/details/qjt_m03.jpg","粉色",1),
 (NULL,"http://127.0.0.1:3000/public/img/details/qjt_s04.jpg","http://127.0.0.1:3000/public/img/details/qjt_m04.jpg","粉色",1),
 (NULL,"http://127.0.0.1:3000/public/img/details/qjt_s05.jpg","http://127.0.0.1:3000/public/img/details/qjt_m05.jpg","粉色",1),
 (NULL,"http://127.0.0.1:3000/public/img/details/hjdj_s01.jpg","http://127.0.0.1:3000/public/img/details/hjdj_m01.jpg",NULL,2),

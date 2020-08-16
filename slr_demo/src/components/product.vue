@@ -210,10 +210,11 @@ export default {
             }
           }
         }
-        this.bigClass = e.target.getAttribute("data-bC");
+        this.bigClass = e.target.dataset.bc;
       }
 
       if (e.target.getAttribute("data-scLi") == "li") {
+        this.smallClass=e.target.dataset.sc;
         console.log(this.smallClass)
       }
     },

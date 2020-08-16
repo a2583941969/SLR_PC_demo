@@ -66,10 +66,10 @@
           <!-- 商品选择 -->
           <div class="pro-color">
             <div v-if="detail_obj.pcolors!=null">
-              <p>颜色选择：{{pcolors[0].pcolor}}</p>
+              <p>颜色选择：{{pc}}</p>
               <ul @click="changeColor">
                 <li v-for="(cObj,i) of pcolors" :key="i">
-                  <a href="#" class="" >
+                  <a href="javascript:;" class>
                     <span :data-color="cObj.pcolor" :style="`background-color:${cObj.bg}`"></span>
                   </a>
                 </li>
@@ -97,7 +97,7 @@
           </div>
           <!-- 加入购物车/立即购买 -->
           <div class="pro-btn">
-            <a href="#">加入购物车</a>
+            <a @click="addShopcart">加入购物车</a>
             <a href="#">立即购买</a>
           </div>
           <!-- 收藏夹 -->
@@ -136,7 +136,7 @@
       </div>
       <div class="details-img-content">
         <div>
-          <img :src="detail_obj.pro_del" alt="">
+          <img :src="detail_obj.pro_del" alt />
         </div>
       </div>
     </div>
@@ -144,23 +144,27 @@
 </template>
 
 <script>
+import { mapMutations} from 'vuex' 
 export default {
   data() {
     return {
-      pid:'',
+      pid: "",
       // 保存商品详细信息的对象
-      detail_obj: {},
+      detail_obj:'',
       // 保存商品所有颜色的数组
       pcolors: [],
+      // 保存商品颜色的变量
+      pc: "",
       // 保存商品颜色与图片路径的数组
       imgUrl: [],
       // 保存第一张的大图
-      img_M:'',
+      img_M: "",
       // 商品数量
-      count:1,
+      count: 1,
     };
   },
   methods: {
+    ...mapMutations(['set_addShop']),
     // 封装一个按顺序执行axios请求的函数
     promise(url) {
       return new Promise((resolve, reject) => {
@@ -174,7 +178,8 @@ export default {
             this.pcolors = this.detail_obj.pcolors;
             // 将JSON字符串转换为对象形式
             this.pcolors = JSON.parse(this.pcolors);
-            console.log(this.pcolors);
+            this.pc = this.pcolors[0].pcolor;
+            // console.log(this.pcolors);
             resolve(this.pcolors[0].pcolor);
           } else {
             // 如果为空,则直接进入下一个异步事件
@@ -190,38 +195,58 @@ export default {
         console.log(color);
         this.$axios.get(url + "&color=" + color).then((result) => {
           this.imgUrl = result.data;
-          this.img_M=this.imgUrl[0].mm;
+          this.img_M = this.imgUrl[0].mm;
           console.log(result.data);
         });
       });
     },
     // 购物车商品数量减少函数
-    minus(){
-      if(this.count>1){
+    minus() {
+      if (this.count > 1) {
         this.count--;
       }
     },
     // 购物车商品数量增加函数
-    add(){
+    add() {
       this.count++;
     },
     // 切换商品图片函数
-    changeImg(e){
-      if(e.target.nodeName=='IMG'){
-        this.img_M=e.target.getAttribute("data-img");
+    changeImg(e) {
+      if (e.target.nodeName == "IMG") {
+        this.img_M = e.target.dataset.img;
       }
     },
-    changeColor(e){
-      if(e.target.nodeName=="SPAN"){
-        let color=e.target.dataset.color;
-        console.log(color);
-        this.$axios.get(`/detail/del?pid=${this.pid}&color=${color}`).then(result=>{
-          this.imgUrl=result.data;
-          this.img_M=this.imgUrl[0].mm;
-        });
-
+    changeColor(e) {
+      if (e.target.nodeName == "SPAN") {
+        let color = e.target.dataset.color;
+        this.pc = color;
+        this.$axios
+          .get(`/detail/del?pid=${this.pid}&color=${color}`)
+          .then((result) => {
+            this.imgUrl = result.data;
+            this.img_M = this.imgUrl[0].mm;
+          });
       }
-    }
+    },
+    // 加入购物车函数
+    addShopcart() {
+      let detailPro=this.detail_obj;
+      let pro = {
+        brand: detailPro.brand,
+        discount: detailPro.discount,
+        idx_img:detailPro.idx_img,
+        pname: detailPro.pname,
+        price: detailPro.price,
+        pro_id: detailPro.pid,
+        spec: detailPro.spec,
+        pro_color: this.pc,
+        scount: this.count,
+        is_checked:true
+      };
+      this.set_addShop(pro);
+      let addShop=JSON.stringify(this.$store.state.addShop);
+      localStorage.setItem("addShop",addShop);
+    },
   },
   computed: {
     price() {
@@ -292,9 +317,14 @@ div.product-details-left > div.left-sm > div {
 div.product-details-left > div.left-sm > div > div {
   border: 1px solid #e1e1e1;
 }
-
+div.product-details-left > div.right-mm {
+  width: 79%;
+}
 div.product-details-left > div.right-mm > div:first-child {
   border-radius: 0.25rem;
+}
+div.product-details-left > div.right-mm img {
+  width: 100%;
 }
 /* 右边详情页介绍 */
 div.product-details-right {
@@ -353,7 +383,8 @@ div.pro-color p {
   line-height: 14px;
   margin-bottom: 12px;
 }
-div.pro-color ul::after ,div.pro-share ul::after{
+div.pro-color ul::after,
+div.pro-share ul::after {
   content: "";
   display: block;
   clear: both;
@@ -368,7 +399,6 @@ div.pro-color ul li a {
   width: 30px;
   height: 30px;
   background: #fff;
-  border: 1px solid #e1e1e1;
   border-radius: 50%;
   text-align: center;
 }
@@ -481,50 +511,50 @@ div.pro-collection a i {
   vertical-align: middle;
   margin: -2px 6px 0 0;
 }
-div.pro-share{
+div.pro-share {
   margin-top: 20px;
 }
-div.pro-share ul li{
+div.pro-share ul li {
   float: left;
   line-height: 24px;
 }
-div.pro-share ul li span{
+div.pro-share ul li span {
   font-size: 14px;
   display: inline-block;
   margin: 0 10px 0 6px;
 }
-div.pro-share ul li a{
-      margin-right: 30px;
+div.pro-share ul li a {
+  margin-right: 30px;
 }
-div.pro-share ul li i{
-   display: inline-block;
+div.pro-share ul li i {
+  display: inline-block;
   background-image: url("../assets/icon.png");
 }
-div.pro-share ul li:first-child i{
-    background-position: -614px -353px;
-    width: 18px;
-    height: 18px;
-    vertical-align: middle;
+div.pro-share ul li:first-child i {
+  background-position: -614px -353px;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
 }
-div.pro-share ul li+li i{
-    width: 24px;
-    height: 24px;
+div.pro-share ul li + li i {
+  width: 24px;
+  height: 24px;
 }
-div.pro-share ul li:nth-child(2) i{
+div.pro-share ul li:nth-child(2) i {
   background-position: -450px -544px;
 }
-div.pro-share ul li:last-child i{
+div.pro-share ul li:last-child i {
   background-position: -480px -544px;
 }
-div.details-img{
+div.details-img {
   width: 68%;
   min-width: 1200px;
   margin: 0 auto;
 }
-div.details-img>div.details-img-header{
+div.details-img > div.details-img-header {
   margin-top: 50px;
 }
-div.details-img-header>a{
+div.details-img-header > a {
   display: block;
   width: 178px;
   margin: 0 auto;
@@ -532,16 +562,15 @@ div.details-img-header>a{
   line-height: 24px;
   padding: 10px 0;
   text-align: center;
-  border-bottom:3px solid red ;
+  border-bottom: 3px solid red;
 }
-div.details-img-content{
-  margin-top:20px ;
+div.details-img-content {
+  margin-top: 20px;
 }
-div.details-img-content>div{
+div.details-img-content > div {
   padding: 0 20px;
   max-width: 1030px;
   margin: 0 auto;
   text-align: center;
 }
-
 </style>
