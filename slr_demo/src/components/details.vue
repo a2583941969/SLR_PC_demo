@@ -243,7 +243,25 @@ export default {
         scount: this.count,
         is_checked:true
       };
-      this.set_addShop(pro);
+      // 判断当缓存里没有保存购物车的属性时，直接添加至数组
+      if(localStorage.getItem('addShop')==undefined){
+        this.set_addShop(pro);
+      }else{
+        // 如果有保存购物车的属性时,先判断购物车里是否有此商品的相同规格,如果有,则数量+1,如果没有,则追加至数组
+        // 使用ES6 数组API  some筛选是否有相同商品相同属性
+        let bool=this.$store.state.addShop.some(item=>{
+          return item.pro_id==pro.pro_id&&item.pro_color==pro.pro_color;
+        })
+        if(bool){
+          for(let obj of this.$store.state.addShop){
+            if(obj.pro_id==pro.pro_id&&obj.pro_color==pro.pro_color){
+              obj.scount++;
+            }
+          }
+        }else{
+          this.set_addShop(pro);
+        }
+      }
       let addShop=JSON.stringify(this.$store.state.addShop);
       localStorage.setItem("addShop",addShop);
     },

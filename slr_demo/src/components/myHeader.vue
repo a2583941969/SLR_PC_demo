@@ -23,7 +23,7 @@
           </li>
           <li>
             <i></i>
-            <router-link to='/shopping'>( {{n}} )</router-link>
+            <router-link to='/shopping'>( {{this.$store.getters.getCount}} )</router-link>
           </li>
         </ul>
       </div>
@@ -421,8 +421,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["set_isLogin", "set_phoneNum", "set_uid"]),
-
+    ...mapMutations(["set_isLogin", "set_phoneNum", "set_uid","set_addShop"]),
     // 控制搜索框输入后下方li的高度
     show() {
       var div = document.getElementsByClassName("search_par")[0];
@@ -460,9 +459,12 @@ export default {
       localStorage.clear();
       this.set_isLogin(false);
       this.set_phoneNum('');
-      this.set_uid('');   
+      this.set_uid('');
+      this.set_addShop('')
     },
   },
+  mounted(){
+  }
 };
 </script>
 

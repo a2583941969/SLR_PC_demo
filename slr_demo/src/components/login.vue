@@ -25,7 +25,7 @@
                 maxlength="11"
                 v-model="phone"
                 @blur="tel"
-              />
+               @keyup.13="login_is" />
               <span :class="[ishint]">{{phoneMsg}}</span>
             </div>
           </div>
@@ -44,7 +44,7 @@
                 v-model="pwd"
                 @blur="password"
                 maxlength="16"
-              />
+               @keyup.13="login_is"/>
               <span :class="[pwdStyle]">{{upwdMsg}}</span>
             </div>
           </div>
@@ -55,7 +55,7 @@
               <span>*</span>
             </label>
             <div>
-              <input type="text" name="verify" placeholder="请输入图片验证码" />
+              <input type="text" name="verify" placeholder="请输入图片验证码"  @keyup.13="login_is"/>
               <span id="verify-msg"></span>
             </div>
             <div>
@@ -75,7 +75,7 @@
           </div>
           <!-- 登录按钮 -->
           <div class="btn">
-            <a @click="login_is">登录</a>
+            <a @click="login_is"  @keyup.13="login_is">登录</a>
           </div>
           <!-- 第三方账号登录 -->
           <div class="third-party">

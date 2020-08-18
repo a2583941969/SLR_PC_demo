@@ -36,7 +36,7 @@
           <!-- 商品列表 -->
           <div class="shop-list" @click="handler">
             <!-- v-for循环的div -->
-            <div v-for="(item,i) of shopcart" :key="i">
+            <div v-for="(item,i) of this.$store.state.addShop" :key="i">
               <input type="checkbox" v-model="item.is_checked" />
               <div class="shopcart-img">
                 <a href="javascript:;">
@@ -106,7 +106,7 @@
           <div>
             <p>
               商品小计:
-              <span>1件已选</span>
+              <span>{{this.$store.getters.getCount}} 件已选</span>
             </p>
             <p>
               商品总价:
@@ -134,9 +134,8 @@ import { mapMutations } from "vuex";
 export default {
   data() {
     return {
-      shopcart: JSON.parse(localStorage.getItem("addShop")) || [],
       // 保存请求状态
-      isAxios: localStorage.getItem('isAxios') || true,
+      isAxios: localStorage.getItem("isAxios") || true,
     };
   },
   methods: {
@@ -144,49 +143,52 @@ export default {
     handler(e) {
       if (e.target.nodeName == "BUTTON" || e.target.nodeName == "I") {
         if (e.target.dataset.icon == "×") {
-          this.shopcart.splice(e.target.dataset.i, 1);
+          this.$store.state.addShop.splice(e.target.dataset.i, 1);
+          let shopcartJson = JSON.stringify(this.$store.state.addShop);
+          localStorage.setItem("addShop", shopcartJson);
         } else {
           let i = e.target.dataset.i;
-          if (this.shopcart[i].scount > 1 || e.target.dataset.n == 1) {
-            this.shopcart[i].scount += parseInt(e.target.dataset.n);
+          if (
+            this.$store.state.addShop[i].scount > 1 ||
+            e.target.dataset.n == 1
+          ) {
+            this.$store.state.addShop[i].scount += parseInt(e.target.dataset.n);
+            let shopcartJson = JSON.stringify(this.$store.state.addShop);
+            localStorage.setItem("addShop", shopcartJson);
           }
         }
       }
     },
   },
-  mounted() {
-    console.log(localStorage.getItem("addShop"));
-    if (localStorage.getItem("uid") !== null && this.isAxios != 'false') {
-      this.isAxios = false;
-      localStorage.setItem("isAxios", this.isAxios);
-      this.$axios
-        .get("/detail/shop?uid=" + this.$store.state.uid)
-        .then((result) => {
-          result.data.forEach((value) => {
-            // 将从数据库取回的商品信息中的是否被选中属性修改为 bool值
-            if (value.is_checked == 1) {
-              value.is_checked = true;
-            } else {
-              value.is_checked = false;
-            }
-            this.shopcart.push(value);
-            
-            this.set_addShop(value);
-          });
-          // 将数据转为JSON字符串之后，存入 localStorage 缓存
 
-          let shopcartJson = JSON.stringify(this.shopcart);
-     
-          
-          localStorage.setItem("addShop", shopcartJson);
-          console.log(this.shopcart);
-        });
-    }
+  mounted() {
+    //localStorage.getItem("uid") !== null && this.isAxios != 'false'
+    // if (false) {
+    //   this.isAxios = false;
+    //   localStorage.setItem("isAxios", this.isAxios);
+    //   this.$axios
+    //     .get("/detail/shop?uid=" + this.$store.state.uid)
+    //     .then((result) => {
+    //       result.data.forEach((value) => {
+    //         // 将从数据库取回的商品信息中的是否被选中属性修改为 bool值
+    //         if (value.is_checked == 1) {
+    //           value.is_checked = true;
+    //         } else {
+    //           value.is_checked = false;
+    //         }
+    //         // value.isSql=true;
+    //         this.set_addShop(value, "push");
+    //       });
+    //       // 将数据转为JSON字符串之后，存入 localStorage 缓存
+    //       let shopcartJson = JSON.stringify(this.$store.state.addShop);
+    //       localStorage.setItem("addShop", shopcartJson);
+    //     });
+    // }
   },
   computed: {
     totalprice() {
       let sum = 0;
-      for (let p of this.shopcart) {
+      for (let p of this.$store.state.addShop) {
         if (p.is_checked) {
           sum += p.price * p.discount * p.scount;
         }
